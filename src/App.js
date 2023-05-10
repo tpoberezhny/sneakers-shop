@@ -3,6 +3,49 @@
 function App() {
   return (
     <div className="wrapper">
+      <div className="overlay">
+        <div className="drawer">
+          <h2>Cart <img className="removeBtn" src="/image/btn-remove.svg" alt="Remove Button" /></h2>
+
+          <div className="items">
+            <div className="cartItem">
+              <div style={{ backgroundImage: 'url(/image/sneakers/1.jpg)' }} className="cartItemImg"></div>
+              <div className="description">
+                <p>Nike Blazer Mid Suede</p>
+                <b>3 455 Kc</b>
+              </div>
+              <img className="removeBtn" src="/image/btn-remove.svg" alt="Remove Button" />
+            </div>
+
+            <div className="cartItem">
+              <div style={{ backgroundImage: 'url(/image/sneakers/1.jpg)' }} className="cartItemImg"></div>
+              <div className="description">
+                <p>Nike Blazer Mid Suede</p>
+                <b>3 455 Kc</b>
+              </div>
+              <img className="removeBtn" src="/image/btn-remove.svg" alt="Remove Button" />
+            </div>
+          </div>
+
+          <div className="cartTotalBlock">
+            <ul>
+              <li>
+                <span>Total:</span>
+                <div></div>
+                <b>3 225 Kc</b>
+              </li>
+              <li>
+                <span>VAT 5%:</span>
+                <div></div>
+                <b>300 Kc</b>
+              </li>
+            </ul>
+            <button className="greenButton">Make an order <img src="/image/arrow.svg" alt="Arrow"/></button>
+          </div>
+        </div>
+      </div>
+
+
       <header>
         <div className="headerLeft">
           <img width={40} height={40} src="/image/logo.png" />
@@ -22,12 +65,21 @@ function App() {
         </ul>
       </header>
       <div className="content">
-        <h1>All Sneakers</h1>
+        <div className="allSneakers">
+          <h1>All Sneakers</h1>
+          <div className="search-block">
+            <img src="/image/search.svg" alt="Search" />
+            <input placeholder="Search..." />
+          </div>
+        </div>
 
 
 
         <div className="sneakers">
           <div className="card">
+            <div className="favorite">
+              <img src="/image/heart-unliked.svg" alt="Unliked" />
+            </div>
             <img width={133} height={112} src="/image/sneakers/1.jpg" alt="Sneakers" />
             <h5>Nike Blazer Mid Suede</h5>
             <div className="sneakersInfo">
