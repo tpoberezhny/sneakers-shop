@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from './components/Card';
 import Header from './components/Header';
 import Cart from './components/Cart';
@@ -7,15 +7,17 @@ function App() {
   const [items, setItems] = useState([]);
   const [cartOpened, setCartOpened] = useState(false);
 
-  fetch('https://645c10aca8f9e4d6e77a2ad8.mockapi.io/items').then((res) => {
-    return res.json();
-  }).then(json => {
-    setItems(json);
-  });
+  useEffect(() => {
+    fetch('https://645c10aca8f9e4d6e77a2ad8.mockapi.io/items').then((res) => {
+      return res.json();
+    }).then(json => {
+      setItems(json);
+    });
+  }, []);
 
   return (
     <div className="wrapper">
-      {cartOpened && <Cart onClose={() => setCartOpened(false)} />} 
+      {cartOpened && <Cart onClose={() => setCartOpened(false)} />}
       <Header onClickCart={() => setCartOpened(true)} />
       <div className="content">
         <div className="allSneakers">
@@ -33,8 +35,8 @@ function App() {
             <Card
               title={obj.title}
               price={obj.price}
-              imageUrl={obj.imageUrl} 
-              />
+              imageUrl={obj.imageUrl}
+            />
           ))}
 
         </div>
