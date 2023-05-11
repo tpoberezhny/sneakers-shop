@@ -6,6 +6,7 @@ import Cart from './components/Cart';
 function App() {
   const [items, setItems] = useState([]);
   const [cartItems, setCartItems] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
   const [cartOpened, setCartOpened] = useState(false);
 
   useEffect(() => {
@@ -20,23 +21,28 @@ function App() {
     setCartItems((prev) => [...prev, obj]);
   };
 
+  const onChangeSearchInput = (event) => {
+    setSearchValue(event.target.value);
+  };
+
   return (
     <div className="wrapper">
       {cartOpened && <Cart items={cartItems} onClose={() => setCartOpened(false)} />}
       <Header onClickCart={() => setCartOpened(true)} />
       <div className="content">
         <div className="allSneakers">
-          <h1>All Sneakers</h1>
+          <h1>{searchValue ? `Your search term: "${searchValue}"` : 'All Sneakers'}</h1>
           <div className="search-block">
             <img src="/image/search.svg" alt="Search" />
-            <input placeholder="Search..." />
+            {searchValue && <img onClick={() => setSearchValue('')} className="removeBtn" src="/image/btn-remove.svg" alt="Clear" />}
+            <input onChange={onChangeSearchInput} value={searchValue} placeholder="Search..." />
           </div>
         </div>
 
 
 
         <div className="sneakers">
-          {items.map((item, index) => (
+          {items.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))/**Making possible to search in lower register */.map((item, index) => (
             <Card
               key={index}
               title={item.title}
