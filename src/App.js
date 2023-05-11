@@ -5,6 +5,7 @@ import Cart from './components/Cart';
 
 function App() {
   const [items, setItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const [cartOpened, setCartOpened] = useState(false);
 
   useEffect(() => {
@@ -15,9 +16,13 @@ function App() {
     });
   }, []);
 
+  const onAddToCart = (obj) => {
+    setCartItems((prev) => [...prev, obj]);
+  };
+
   return (
     <div className="wrapper">
-      {cartOpened && <Cart onClose={() => setCartOpened(false)} />}
+      {cartOpened && <Cart items={cartItems} onClose={() => setCartOpened(false)} />}
       <Header onClickCart={() => setCartOpened(true)} />
       <div className="content">
         <div className="allSneakers">
@@ -31,11 +36,12 @@ function App() {
 
 
         <div className="sneakers">
-          {items.map((obj) => (
+          {items.map((item) => (
             <Card
-              title={obj.title}
-              price={obj.price}
-              imageUrl={obj.imageUrl}
+              title={item.title}
+              price={item.price}
+              imageUrl={item.imageUrl}
+              onPlus={(obj) => onAddToCart(obj)}
             />
           ))}
 
