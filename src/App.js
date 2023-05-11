@@ -14,10 +14,19 @@ function App() {
     axios.get('https://645c10aca8f9e4d6e77a2ad8.mockapi.io/items').then((res) => {
       setItems(res.data);
     });
+    axios.get('https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart').then((res) => {
+      setCartItems(res.data);
+    });
   }, []);
 
   const onAddToCart = (obj) => {
+    axios.post('https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart', obj);
     setCartItems((prev) => [...prev, obj]);
+  };
+
+  const onRemoveItem = (id) => {
+    axios.delete(`https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/${id}`);
+    setCartItems((prev) => prev.filter(item => item.id !== id));
   };
 
   const onChangeSearchInput = (event) => {
@@ -26,7 +35,7 @@ function App() {
 
   return (
     <div className="wrapper">
-      {cartOpened && <Cart items={cartItems} onClose={() => setCartOpened(false)} />}
+      {cartOpened && <Cart items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveItem} />}
       <Header onClickCart={() => setCartOpened(true)} />
       <div className="content">
         <div className="allSneakers">

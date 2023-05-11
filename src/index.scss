@@ -203,6 +203,40 @@ header {
   }
 }
 
+.cartEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex: 1;
+  text-align: center;
+
+  p {
+    opacity: 6;
+    width: 280px;
+    line-height: 24px;
+  }
+
+  .greenButton {
+    width: 245px;
+    margin-top: 20px;
+
+    &:hover {
+      img {
+        transform: rotate(180deg) translateX(3px)
+      }
+    }
+    img {
+      position: relative;
+      top: 2px;
+      transform: rotate(180deg);
+      margin-right: 15px;
+      align-items: center;
+      transition: transform 0.15s ease-in-out;
+    }
+  }
+}
+
 .removeBtn {
   opacity: 0.5;
   cursor: pointer;
