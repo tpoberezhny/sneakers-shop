@@ -36,8 +36,9 @@ function App() {
 
 
         <div className="sneakers">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <Card
+              key={index}
               title={item.title}
               price={item.price}
               imageUrl={item.imageUrl}
