@@ -32,7 +32,7 @@ function Home({
           />
         </div>
       </div>
-{console.log(cartItems, items)}
+
       <div className="sneakers">
         {items
           .filter((item) =>
