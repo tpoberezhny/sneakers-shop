@@ -36,11 +36,15 @@ function App() {
   };
 
   const onAddToFavorite = async (obj) => {
-    if (favorites.find((favObj) => favObj.id === obj.id)) {
-      axios.delete(`https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites/${obj.id}`);
-    } else {
-      const { data } = await axios.post('https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites', obj);
-      setFavorites((prev) => [...prev, data]);
+    try {
+      if (favorites.find((favObj) => favObj.id === obj.id)) {
+        axios.delete(`https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites/${obj.id}`);
+      } else {
+        const { data } = await axios.post('https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites', obj); /**Firstly waiting for responce from back-end, then posting */
+        setFavorites((prev) => [...prev, data]);
+      }
+    } catch (error) {
+      alert('Something went wrong, unable to add the item to "Favorites"');
     }
   };
 
