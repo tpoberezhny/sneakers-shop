@@ -1,4 +1,40 @@
+import React, { useState, useContext } from "react";
+import axios from "axios";
+
+import Info from "./info";
+import AppContext from "../context";
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 function Cart({ onClose, onRemove, items = [] }) {
+  const { cartItems, setCartItems } = useContext(AppContext);
+  const [orderId, setOrderId] = useState(null);
+  const [orderComplete, setOrderComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onClickOrder = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.post(
+        "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/orders",
+        { items: cartItems }
+      );
+      setOrderId(data.id);
+      setOrderComplete(true);
+      setCartItems([]);
+
+      for (let i = 0; i < cartItems.length; i++) {
+        const item = cartItems[i];
+          await axios.delete("https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/" + item.id);
+          await delay(1000);
+      }; //dosnt work with forEach
+
+    } catch (error) {
+      alert("Can`t make an order :(");
+    }
+    setIsLoading(false);
+  };
+
   return (
     <div className="overlay">
       <div className="drawer">
@@ -13,7 +49,7 @@ function Cart({ onClose, onRemove, items = [] }) {
         </h2>
 
         {items.length > 0 ? (
-          <div>
+          <div className="orderItems">
             <div className="items">
               {items.map((obj) => (
                 <div key={obj.id} className="cartItem">
@@ -47,28 +83,29 @@ function Cart({ onClose, onRemove, items = [] }) {
                   <b>200 Kč</b>
                 </li>
               </ul>
-              <button className="greenButton">
+              <button
+                disabled={isLoading}
+                onClick={onClickOrder}
+                className="greenButton"
+              >
                 Make an order <img src="/image/arrow.svg" alt="Arrow" />
               </button>
             </div>
           </div>
         ) : (
-          <div className="cartEmpty">
-            <img
-              width={120}
-              height={120}
-              src="image/empty-cart.jpg"
-              alt="Empty Cart"
-            />
-            <h2>Cart is Empty</h2>
-            <p className="text">
-              Add at least one pair of sneakers for an order
-            </p>
-            <button onClick={onClose} className="greenButton">
-              <img src="/image/arrow.svg" alt="Arrow" />
-              Go back
-            </button>
-          </div>
+          <Info
+            title={orderComplete ? "Order Complete!" : "Cart is Empty"}
+            description={
+              orderComplete
+                ? `Your order #${orderId} will soon be transferred to courier delivery`
+                : "Add at least one pair of sneakers for an order"
+            }
+            image={
+              orderComplete
+                ? "/image/complete-order.jpg"
+                : "/image/empty-cart.jpg"
+            }
+          />
         )}
       </div>
     </div>
