@@ -52,15 +52,15 @@ function Cart({ onClose, onRemove, items = [], opened }) {
         </h2>
 
         {items.length > 0 ? (
-          <div className="orderItems">
-            <div className="items">
+          <div className={styles.orderItems}>
+            <div className={styles.items}>
               {items.map((obj) => (
-                <div key={obj.id} className="cartItem">
+                <div key={obj.id} className={styles.cartItem}>
                   <div
                     style={{ backgroundImage: `url(${obj.imageUrl})` }}
-                    className="cartItemImg"
+                    className={styles.cartItemImg}
                   ></div>
-                  <div className="description">
+                  <div className={styles.description}>
                     <p>{obj.title}</p>
                     <b>{obj.price} Kč</b>
                   </div>

@@ -19,43 +19,77 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      const cartResponse = await axios.get(
-        "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart"
-      );
-      const favoritesResponse = await axios.get(
-        "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites"
-      );
-      const itemsResponse = await axios.get(
-        "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/items"
-      );
+      try {
+        const cartResponse = await axios.get(
+          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart"
+        );
+        const favoritesResponse = await axios.get(
+          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites"
+        );
+        const itemsResponse = await axios.get(
+          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/items"
+        );
 
-      setIsLoading(false);
+        setIsLoading(false);
 
-      setCartItems(cartResponse.data);
-      setFavorites(favoritesResponse.data);
-      setItems(itemsResponse.data);
+        setCartItems(cartResponse.data);
+        setFavorites(favoritesResponse.data);
+        setItems(itemsResponse.data);
+      } catch (error) {
+        alert("Data request error ;(");
+        console.error(error);
+      }
     }
 
     fetchData();
   }, []);
 
-  const onAddToCart = (obj) => {
-    if (cartItems.find((item) => Number(item.id) === Number(obj.id))) {
-      axios.delete(
-        `https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/${obj.id}`
+  const onAddToCart = async (obj) => {
+    try {
+      const findItem = cartItems.find(
+        (item) => Number(item.parentId) === Number(obj.id)
       );
-      setCartItems((prev) =>
-        prev.filter((item) => Number(item.id) !== Number(obj.id))
-      );
-    } else {
-      axios.post("https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart", obj);
-      setCartItems((prev) => [...prev, obj]);
+      if (findItem) {
+        setCartItems((prev) =>
+          prev.filter((item) => Number(item.parentId) !== Number(obj.id))
+        );
+        await axios.delete(
+          `https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/${findItem.id}`
+        );
+      } else {
+        setCartItems((prev) => [...prev, obj]);
+        const { data } = await axios.post(
+          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart",
+          obj
+        );
+        setCartItems((prev) =>
+          prev.map((item) => {
+            if (item.parentId === data.parentId) {
+              return {
+                ...item,
+                id: data.id,
+              };
+            }
+            return item;
+          })
+        );
+      }
+    } catch (error) {
+      alert("Error adding an item to cart");
+      console.error(error);
     }
   };
 
   const onRemoveItem = (id) => {
-    axios.delete(`https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/${id}`);
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    try {
+      axios.delete(`https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/${id}`);
+      setCartItems((prev) =>
+        prev.filter((item) => Number(item.id) !== Number(id))
+      );
+    } catch (error) {
+      alert("Error removing an item from cart");
+      console.error(error);
+    }
   };
 
   const onAddToFavorite = async (obj) => {
@@ -76,6 +110,7 @@ function App() {
       }
     } catch (error) {
       alert('Something went wrong, unable to add the item to "Favorites"');
+      console.error(error);
     }
   };
 
@@ -84,7 +119,7 @@ function App() {
   };
 
   const isItemAdded = (id) => {
-    return cartItems.some((obj) => Number(obj.id) === Number(id));
+    return cartItems.some((obj) => Number(obj.parentId) === Number(id));
   };
 
   return (
@@ -100,14 +135,13 @@ function App() {
       }}
     >
       <div className="wrapper">
+        <Cart
+          items={cartItems}
+          onClose={() => setCartOpened(false)}
+          onRemove={onRemoveItem}
+          opened={cartOpened}
+        />
 
-          <Cart
-            items={cartItems}
-            onClose={() => setCartOpened(false)}
-            onRemove={onRemoveItem}
-            opened={cartOpened}
-          />
- 
         <Header onClickCart={() => setCartOpened(true)} />
 
         <Routes>
