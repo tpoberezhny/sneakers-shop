@@ -11,6 +11,7 @@ function Cart({ onClose, onRemove, items = [] }) {
   const [orderId, setOrderId] = useState(null);
   const [orderComplete, setOrderComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const totalPrice = cartItems.reduce((sum, obj) => obj.price + sum, 0);
 
   const onClickOrder = async () => {
     try {
@@ -27,7 +28,7 @@ function Cart({ onClose, onRemove, items = [] }) {
         const item = cartItems[i];
           await axios.delete("https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/" + item.id);
           await delay(1000);
-      }; //dosnt work with forEach
+      }; //dosnt work with forEach, doing delay cause mockApi can block
 
     } catch (error) {
       alert("Can`t make an order :(");
@@ -75,12 +76,12 @@ function Cart({ onClose, onRemove, items = [] }) {
                 <li>
                   <span>Total:</span>
                   <div></div>
-                  <b>3 225 Kč</b>
+                  <b>{totalPrice} Kč</b>
                 </li>
                 <li>
                   <span>VAT 5%:</span>
                   <div></div>
-                  <b>200 Kč</b>
+                  <b>{Math.round((totalPrice / 100) * 5)} Kč</b>
                 </li>
               </ul>
               <button
