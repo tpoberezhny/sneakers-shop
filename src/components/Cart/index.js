@@ -1,12 +1,14 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 
-import Info from "./info";
-import AppContext from "../context";
+import Info from "../info";
+import AppContext from "../../context";
+
+import styles from "./Cart.module.scss";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function Cart({ onClose, onRemove, items = [] }) {
+function Cart({ onClose, onRemove, items = [], opened }) {
   const { cartItems, setCartItems } = useContext(AppContext);
   const [orderId, setOrderId] = useState(null);
   const [orderComplete, setOrderComplete] = useState(false);
@@ -37,8 +39,8 @@ function Cart({ onClose, onRemove, items = [] }) {
   };
 
   return (
-    <div className="overlay">
-      <div className="drawer">
+    <div className={`${styles.overlay} ${opened ? styles.overlayVisible : ''}`}>
+      <div className={styles.drawer}>
         <h2>
           Cart{" "}
           <img
