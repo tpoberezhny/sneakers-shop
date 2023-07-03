@@ -34,12 +34,12 @@ function Home({
           {searchValue ? `Your search term: "${searchValue}"` : "All Sneakers"}
         </h1>
         <div className="search-block">
-          <img src="/image/search.svg" alt="Search" />
+          <img src="image/search.svg" alt="Search" />
           {searchValue && (
             <img
               onClick={() => setSearchValue("")}
               className="removeBtn"
-              src="/image/btn-remove.svg"
+              src="image/btn-remove.svg"
               alt="Clear"
             />
           )}
