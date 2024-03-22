@@ -19,7 +19,7 @@ function Cart({ onClose, onRemove, items = [], opened }) {
     try {
       setIsLoading(true);
       const { data } = await axios.post(
-        "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/orders",
+        "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/orders",
         { items: cartItems }
       );
       setOrderId(data.id);
@@ -28,7 +28,7 @@ function Cart({ onClose, onRemove, items = [], opened }) {
 
       for (let i = 0; i < cartItems.length; i++) {
         const item = cartItems[i];
-          await axios.delete("https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/" + item.id);
+          await axios.delete("https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart/" + item.id);
           await delay(1000);
       }; //dosnt work with forEach, doing delay cause mockApi can block
 

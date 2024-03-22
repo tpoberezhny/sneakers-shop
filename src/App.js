@@ -21,13 +21,13 @@ function App() {
     async function fetchData() {
       try {
         const cartResponse = await axios.get(
-          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart"
+          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart"
         );
         const favoritesResponse = await axios.get(
-          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites"
+          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/favorites"
         );
         const itemsResponse = await axios.get(
-          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/items"
+          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/items"
         );
 
         setIsLoading(false);
@@ -54,12 +54,12 @@ function App() {
           prev.filter((item) => Number(item.parentId) !== Number(obj.id))
         );
         await axios.delete(
-          `https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/${findItem.id}`
+          `https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart/${findItem.id}`
         );
       } else {
         setCartItems((prev) => [...prev, obj]);
         const { data } = await axios.post(
-          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart",
+          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart",
           obj
         );
         setCartItems((prev) =>
@@ -82,7 +82,7 @@ function App() {
 
   const onRemoveItem = (id) => {
     try {
-      axios.delete(`https://645c10aca8f9e4d6e77a2ad8.mockapi.io/cart/${id}`);
+      axios.delete(`https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart/${id}`);
       setCartItems((prev) =>
         prev.filter((item) => Number(item.id) !== Number(id))
       );
@@ -96,14 +96,14 @@ function App() {
     try {
       if (favorites.find((favObj) => Number(favObj.id) === Number(obj.id))) {
         axios.delete(
-          `https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites/${obj.id}`
+          `https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/favorites/${obj.id}`
         );
         setFavorites((prev) =>
           prev.filter((item) => Number(item.id) !== Number(obj.id))
         );
       } else {
         const { data } = await axios.post(
-          "https://645c10aca8f9e4d6e77a2ad8.mockapi.io/favorites",
+          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/favorites",
           obj
         ); /**Firstly waiting for responce from back-end, then posting */
         setFavorites((prev) => [...prev, data]);
