@@ -25,17 +25,14 @@ function Cart({ onClose, onRemove, items = [], opened }) {
       setOrderId(data.id);
       setOrderComplete(true);
       setCartItems([]);
-
-      for (let i = 0; i < cartItems.length; i++) {
-        const item = cartItems[i];
-          await axios.delete("https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart/" + item.id);
-          await delay(1000);
-      }; //dosnt work with forEach, doing delay cause mockApi can block
+      localStorage.setItem("cartItems", JSON.stringify([]));
 
     } catch (error) {
-      alert("Can`t make an order :(");
+      alert("Can’t make an order :(");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (

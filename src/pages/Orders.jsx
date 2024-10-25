@@ -11,7 +11,7 @@ function Orders() {
     async function fetchOrders() {
       try {
         const { data } = await axios.get(
-          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/orders"
+          "https://671b8ce12c842d92c3806888.mockapi.io/tima/orders"
         );
         setOrders(data.map((obj) => obj.items).flat());
         setIsLoading(false);

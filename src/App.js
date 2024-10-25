@@ -11,8 +11,14 @@ import Orders from "./pages/Orders";
 
 function App() {
   const [items, setItems] = useState([]);
-  const [cartItems, setCartItems] = useState([]);
-  const [favorites, setFavorites] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem("cartItems");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  const [favorites, setFavorites] = useState(() => {
+    const savedFavorites = localStorage.getItem("favorites");
+    return savedFavorites ? JSON.parse(savedFavorites) : [];
+  });
   const [searchValue, setSearchValue] = useState("");
   const [cartOpened, setCartOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,20 +26,11 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const cartResponse = await axios.get(
-          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart"
-        );
-        const favoritesResponse = await axios.get(
-          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/favorites"
-        );
         const itemsResponse = await axios.get(
-          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/items"
+          "https://671b8ce12c842d92c3806888.mockapi.io/tima/items"
         );
 
         setIsLoading(false);
-
-        setCartItems(cartResponse.data);
-        setFavorites(favoritesResponse.data);
         setItems(itemsResponse.data);
       } catch (error) {
         alert("Data request error ;(");
@@ -44,73 +41,41 @@ function App() {
     fetchData();
   }, []);
 
-  const onAddToCart = async (obj) => {
-    try {
-      const findItem = cartItems.find(
-        (item) => Number(item.parentId) === Number(obj.id)
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // Update local storage whenever favorites change
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const onAddToCart = (obj) => {
+    const findItem = cartItems.find(
+      (item) => Number(item.parentId) === Number(obj.id)
+    );
+    if (findItem) {
+      setCartItems((prev) =>
+        prev.filter((item) => Number(item.parentId) !== Number(obj.id))
       );
-      if (findItem) {
-        setCartItems((prev) =>
-          prev.filter((item) => Number(item.parentId) !== Number(obj.id))
-        );
-        await axios.delete(
-          `https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart/${findItem.id}`
-        );
-      } else {
-        setCartItems((prev) => [...prev, obj]);
-        const { data } = await axios.post(
-          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart",
-          obj
-        );
-        setCartItems((prev) =>
-          prev.map((item) => {
-            if (item.parentId === data.parentId) {
-              return {
-                ...item,
-                id: data.id,
-              };
-            }
-            return item;
-          })
-        );
-      }
-    } catch (error) {
-      alert("Error adding an item to cart");
-      console.error(error);
+    } else {
+      setCartItems((prev) => [...prev, obj]);
     }
   };
 
   const onRemoveItem = (id) => {
-    try {
-      axios.delete(`https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/cart/${id}`);
-      setCartItems((prev) =>
-        prev.filter((item) => Number(item.id) !== Number(id))
-      );
-    } catch (error) {
-      alert("Error removing an item from cart");
-      console.error(error);
-    }
+    setCartItems((prev) =>
+      prev.filter((item) => Number(item.id) !== Number(id))
+    );
   };
 
-  const onAddToFavorite = async (obj) => {
-    try {
-      if (favorites.find((favObj) => Number(favObj.id) === Number(obj.id))) {
-        axios.delete(
-          `https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/favorites/${obj.id}`
-        );
-        setFavorites((prev) =>
-          prev.filter((item) => Number(item.id) !== Number(obj.id))
-        );
-      } else {
-        const { data } = await axios.post(
-          "https://65fdc1c7b2a18489b3856224.mockapi.io/api/tima/favorites",
-          obj
-        ); /**Firstly waiting for responce from back-end, then posting */
-        setFavorites((prev) => [...prev, data]);
-      }
-    } catch (error) {
-      alert('Something went wrong, unable to add the item to "Favorites"');
-      console.error(error);
+  const onAddToFavorite = (obj) => {
+    if (favorites.find((favObj) => Number(favObj.id) === Number(obj.id))) {
+      setFavorites((prev) =>
+        prev.filter((item) => Number(item.id) !== Number(obj.id))
+      );
+    } else {
+      setFavorites((prev) => [...prev, obj]);
     }
   };
 
